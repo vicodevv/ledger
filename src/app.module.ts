@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TenantsModule } from './modules/tenants/tenants.module';
 import { AccountsModule } from './modules/accounts/accounts.module';
 import { LedgerModule } from './modules/ledger/ledger.module';
+import { ExchangeRatesModule } from './modules/exchange-rates/exchange-rates.module';
 
 @Module({
   imports: [
@@ -13,6 +15,8 @@ import { LedgerModule } from './modules/ledger/ledger.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
+
+    ScheduleModule.forRoot(),
 
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -31,10 +35,9 @@ import { LedgerModule } from './modules/ledger/ledger.module';
     }),
 
     TenantsModule,
-
     AccountsModule,
-
     LedgerModule,
+    ExchangeRatesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
