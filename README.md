@@ -163,23 +163,3 @@ Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for de
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
-
-## Inspiration
-
-Built as an open-source alternative to:
-- [Blnk Finance](https://blnkfinance.com/) - Ledger for fintechs
-- Stripe Ledger (proprietary)
-- Modern Treasury (proprietary)
-
-## Author
-
-**Victor Omoniyi**
-- Backend Engineer specializing in fintech infrastructure
-- Building production-grade systems for African markets
-- [LinkedIn](https://linkedin.com/in/victoromoniyi) | [GitHub](https://github.com/yourusername)
-
-## Acknowledgments
-
-- Inspired by Blnk Finance's approach to ledger architecture
-- Built with knowledge from FigoRisk GRC platform development
-- Designed for African infrastructure constraints (intermittent connectivity, multi-currency complexity)# ledger
