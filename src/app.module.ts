@@ -8,6 +8,7 @@ import { TenantsModule } from './modules/tenants/tenants.module';
 import { AccountsModule } from './modules/accounts/accounts.module';
 import { LedgerModule } from './modules/ledger/ledger.module';
 import { ExchangeRatesModule } from './modules/exchange-rates/exchange-rates.module';
+import { AuditModule } from './modules/audit/audit.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ExchangeRatesModule } from './modules/exchange-rates/exchange-rates.mod
     AccountsModule,
     LedgerModule,
     ExchangeRatesModule,
+    AuditModule,
   ],
   controllers: [AppController],
   providers: [AppService],

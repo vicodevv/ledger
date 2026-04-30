@@ -6,12 +6,14 @@ import { Transaction } from './entities/transaction.entity';
 import { TransactionLine } from './entities/transaction-line.entity';
 import { AccountsModule } from '../accounts/accounts.module';
 import { TenantsModule } from '../tenants/tenants.module';
+import { AuditModule } from '../audit/audit.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Transaction, TransactionLine]),
     AccountsModule,
     TenantsModule,
+    AuditModule,
   ],
   controllers: [LedgerController],
   providers: [LedgerService],

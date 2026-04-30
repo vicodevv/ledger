@@ -14,6 +14,7 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { AccountsService } from '../accounts/accounts.service';
 import { TenantsService } from '../tenants/tenants.service';
 import Decimal from 'decimal.js';
+import { AuditService } from '../audit/audit.service';
 
 @Injectable()
 export class LedgerService {
@@ -25,6 +26,7 @@ export class LedgerService {
     private readonly accountsService: AccountsService,
     private readonly tenantsService: TenantsService,
     private readonly dataSource: DataSource,
+    private readonly auditService: AuditService,
   ) {}
 
   async createTransaction(
@@ -130,6 +132,17 @@ export class LedgerService {
 
       await queryRunner.commitTransaction();
 
+      await this.auditService.logCreate(
+        'transaction',
+        savedTransaction.id,
+        createTransactionDto.tenantId,
+        createTransactionDto.createdBy,
+        {
+          description: createTransactionDto.description,
+          reference: createTransactionDto.reference,
+          linesCount: createTransactionDto.lines.length,
+        },
+      );
       // Return transaction with lines
       return await this.transactionRepository.findOne({
         where: { id: savedTransaction.id },
