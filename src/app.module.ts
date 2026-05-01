@@ -9,6 +9,7 @@ import { AccountsModule } from './modules/accounts/accounts.module';
 import { LedgerModule } from './modules/ledger/ledger.module';
 import { ExchangeRatesModule } from './modules/exchange-rates/exchange-rates.module';
 import { AuditModule } from './modules/audit/audit.module';
+import { CryptoModule } from './modules/crypto/crypto.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { AuditModule } from './modules/audit/audit.module';
     LedgerModule,
     ExchangeRatesModule,
     AuditModule,
+    CryptoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
