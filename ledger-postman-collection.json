@@ -1,0 +1,767 @@
+{
+  "info": {
+    "_postman_id": "ledger-api-collection",
+    "name": "Ledger API - Complete Collection",
+    "description": "Production-grade double-entry accounting ledger with multi-tenant support, multi-currency handling, exchange rates, and audit logging.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "tenant_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "cash_account_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "revenue_account_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "transaction_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Tenants",
+      "item": [
+        {
+          "name": "Create Tenant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('tenant_id', response.id);",
+                  "    pm.environment.set('tenant_id', response.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Acme Corporation\",\n  \"slug\": \"acme\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tenants",
+              "host": ["{{base_url}}"],
+              "path": ["tenants"]
+            },
+            "description": "Creates a new tenant (company) in the system. Each tenant has isolated data."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Tenants",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/tenants",
+              "host": ["{{base_url}}"],
+              "path": ["tenants"]
+            },
+            "description": "Retrieves all tenants in the system."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Tenant by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/tenants/{{tenant_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["tenants", "{{tenant_id}}"]
+            },
+            "description": "Retrieves a specific tenant by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Tenant by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/tenants/slug/acme",
+              "host": ["{{base_url}}"],
+              "path": ["tenants", "slug", "acme"]
+            },
+            "description": "Retrieves a tenant by their unique slug."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Tenant",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/tenants/{{tenant_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["tenants", "{{tenant_id}}"]
+            },
+            "description": "Deletes a tenant and all associated data."
+          },
+          "response": []
+        }
+      ],
+      "description": "Tenant management endpoints for multi-tenant isolation."
+    },
+    {
+      "name": "2. Accounts",
+      "item": [
+        {
+          "name": "Create Cash Account (ASSET)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('cash_account_id', response.id);",
+                  "    pm.environment.set('cash_account_id', response.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenantId\": \"{{tenant_id}}\",\n  \"code\": \"1000\",\n  \"name\": \"Cash in Bank\",\n  \"type\": \"ASSET\",\n  \"currency\": \"NGN\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/accounts",
+              "host": ["{{base_url}}"],
+              "path": ["accounts"]
+            },
+            "description": "Creates a Cash account (ASSET type). Account types: ASSET, LIABILITY, EQUITY, REVENUE, EXPENSE."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Revenue Account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('revenue_account_id', response.id);",
+                  "    pm.environment.set('revenue_account_id', response.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenantId\": \"{{tenant_id}}\",\n  \"code\": \"4000\",\n  \"name\": \"Sales Revenue\",\n  \"type\": \"REVENUE\",\n  \"currency\": \"NGN\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/accounts",
+              "host": ["{{base_url}}"],
+              "path": ["accounts"]
+            },
+            "description": "Creates a Revenue account."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Expense Account",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenantId\": \"{{tenant_id}}\",\n  \"code\": \"5000\",\n  \"name\": \"Operating Expenses\",\n  \"type\": \"EXPENSE\",\n  \"currency\": \"NGN\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/accounts",
+              "host": ["{{base_url}}"],
+              "path": ["accounts"]
+            },
+            "description": "Creates an Expense account."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Accounts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/accounts",
+              "host": ["{{base_url}}"],
+              "path": ["accounts"]
+            },
+            "description": "Retrieves all accounts across all tenants."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Accounts by Tenant",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/accounts?tenantId={{tenant_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["accounts"],
+              "query": [
+                {
+                  "key": "tenantId",
+                  "value": "{{tenant_id}}"
+                }
+              ]
+            },
+            "description": "Retrieves all accounts for a specific tenant."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Account by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/accounts/{{cash_account_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["accounts", "{{cash_account_id}}"]
+            },
+            "description": "Retrieves a specific account by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Account Balance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/accounts/{{cash_account_id}}/balance",
+              "host": ["{{base_url}}"],
+              "path": ["accounts", "{{cash_account_id}}", "balance"]
+            },
+            "description": "Retrieves the current balance of an account."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Account",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/accounts/{{cash_account_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["accounts", "{{cash_account_id}}"]
+            },
+            "description": "Deletes an account. Will fail if account has children or transactions."
+          },
+          "response": []
+        }
+      ],
+      "description": "Chart of accounts management with support for account hierarchies."
+    },
+    {
+      "name": "3. Transactions (Ledger)",
+      "item": [
+        {
+          "name": "Create Transaction - Customer Payment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('transaction_id', response.id);",
+                  "    pm.environment.set('transaction_id', response.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenantId\": \"{{tenant_id}}\",\n  \"idempotencyKey\": \"payment-001\",\n  \"description\": \"Payment from customer\",\n  \"reference\": \"INV-001\",\n  \"transactionDate\": \"2026-04-30T10:00:00Z\",\n  \"createdBy\": \"user-123\",\n  \"lines\": [\n    {\n      \"accountId\": \"{{cash_account_id}}\",\n      \"debit\": 10000,\n      \"credit\": 0,\n      \"currency\": \"NGN\",\n      \"description\": \"Cash received\"\n    },\n    {\n      \"accountId\": \"{{revenue_account_id}}\",\n      \"debit\": 0,\n      \"credit\": 10000,\n      \"currency\": \"NGN\",\n      \"description\": \"Sales revenue\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/transactions",
+              "host": ["{{base_url}}"],
+              "path": ["transactions"]
+            },
+            "description": "Creates a double-entry transaction. Debits must equal credits. Example: Customer pays ₦10,000."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Transaction - Expense Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenantId\": \"{{tenant_id}}\",\n  \"idempotencyKey\": \"expense-001\",\n  \"description\": \"Office rent payment\",\n  \"reference\": \"RENT-APR-2026\",\n  \"transactionDate\": \"2026-04-30T10:00:00Z\",\n  \"createdBy\": \"user-123\",\n  \"lines\": [\n    {\n      \"accountId\": \"EXPENSE_ACCOUNT_ID_HERE\",\n      \"debit\": 5000,\n      \"credit\": 0,\n      \"currency\": \"NGN\",\n      \"description\": \"Rent expense\"\n    },\n    {\n      \"accountId\": \"{{cash_account_id}}\",\n      \"debit\": 0,\n      \"credit\": 5000,\n      \"currency\": \"NGN\",\n      \"description\": \"Cash payment\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/transactions",
+              "host": ["{{base_url}}"],
+              "path": ["transactions"]
+            },
+            "description": "Creates an expense transaction. Cash decreases, Expense increases."
+          },
+          "response": []
+        },
+        {
+          "name": "Test Idempotency - Duplicate Transaction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenantId\": \"{{tenant_id}}\",\n  \"idempotencyKey\": \"payment-001\",\n  \"description\": \"Duplicate attempt\",\n  \"reference\": \"INV-001\",\n  \"transactionDate\": \"2026-04-30T10:00:00Z\",\n  \"lines\": [\n    {\n      \"accountId\": \"{{cash_account_id}}\",\n      \"debit\": 10000,\n      \"credit\": 0,\n      \"currency\": \"NGN\"\n    },\n    {\n      \"accountId\": \"{{revenue_account_id}}\",\n      \"debit\": 0,\n      \"credit\": 10000,\n      \"currency\": \"NGN\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/transactions",
+              "host": ["{{base_url}}"],
+              "path": ["transactions"]
+            },
+            "description": "Tests idempotency - should return the existing transaction instead of creating a new one."
+          },
+          "response": []
+        },
+        {
+          "name": "Test Validation - Unbalanced Transaction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenantId\": \"{{tenant_id}}\",\n  \"description\": \"This should fail - unbalanced\",\n  \"transactionDate\": \"2026-04-30T10:00:00Z\",\n  \"lines\": [\n    {\n      \"accountId\": \"{{cash_account_id}}\",\n      \"debit\": 5000,\n      \"credit\": 0,\n      \"currency\": \"NGN\"\n    },\n    {\n      \"accountId\": \"{{revenue_account_id}}\",\n      \"debit\": 0,\n      \"credit\": 3000,\n      \"currency\": \"NGN\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/transactions",
+              "host": ["{{base_url}}"],
+              "path": ["transactions"]
+            },
+            "description": "Tests validation - should fail because debits (5000) != credits (3000)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Transactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/transactions",
+              "host": ["{{base_url}}"],
+              "path": ["transactions"]
+            },
+            "description": "Retrieves all transactions with their lines."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transactions by Tenant",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/transactions?tenantId={{tenant_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["transactions"],
+              "query": [
+                {
+                  "key": "tenantId",
+                  "value": "{{tenant_id}}"
+                }
+              ]
+            },
+            "description": "Retrieves all transactions for a specific tenant."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transaction by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/transactions/{{transaction_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["transactions", "{{transaction_id}}"]
+            },
+            "description": "Retrieves a specific transaction with all its lines."
+          },
+          "response": []
+        }
+      ],
+      "description": "Double-entry transaction engine with automatic balance updates."
+    },
+    {
+      "name": "4. Exchange Rates",
+      "item": [
+        {
+          "name": "Sync Rates from API",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/exchange-rates/sync",
+              "host": ["{{base_url}}"],
+              "path": ["exchange-rates", "sync"]
+            },
+            "description": "Manually triggers exchange rate sync from external API. Auto-syncs daily at midnight."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Manual Exchange Rate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromCurrency\": \"USD\",\n  \"toCurrency\": \"NGN\",\n  \"rate\": 1580.50,\n  \"validFrom\": \"2026-04-30T00:00:00Z\",\n  \"source\": \"manual\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/exchange-rates",
+              "host": ["{{base_url}}"],
+              "path": ["exchange-rates"]
+            },
+            "description": "Manually creates an exchange rate (e.g., for custom or historical rates)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Exchange Rates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/exchange-rates",
+              "host": ["{{base_url}}"],
+              "path": ["exchange-rates"]
+            },
+            "description": "Retrieves all exchange rates (historical and current)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Latest Rate for Currency Pair",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/exchange-rates/latest?from=USD&to=NGN",
+              "host": ["{{base_url}}"],
+              "path": ["exchange-rates", "latest"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "USD"
+                },
+                {
+                  "key": "to",
+                  "value": "NGN"
+                }
+              ]
+            },
+            "description": "Gets the most recent exchange rate for a currency pair."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Rate at Specific Date",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/exchange-rates/rate?from=USD&to=NGN&date=2026-04-30",
+              "host": ["{{base_url}}"],
+              "path": ["exchange-rates", "rate"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "USD"
+                },
+                {
+                  "key": "to",
+                  "value": "NGN"
+                },
+                {
+                  "key": "date",
+                  "value": "2026-04-30"
+                }
+              ]
+            },
+            "description": "Gets the exchange rate for a currency pair at a specific date."
+          },
+          "response": []
+        },
+        {
+          "name": "Convert Currency",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/exchange-rates/convert?amount=100&from=USD&to=NGN",
+              "host": ["{{base_url}}"],
+              "path": ["exchange-rates", "convert"],
+              "query": [
+                {
+                  "key": "amount",
+                  "value": "100"
+                },
+                {
+                  "key": "from",
+                  "value": "USD"
+                },
+                {
+                  "key": "to",
+                  "value": "NGN"
+                }
+              ]
+            },
+            "description": "Converts an amount from one currency to another using current rates."
+          },
+          "response": []
+        },
+        {
+          "name": "Test Reverse Rate Calculation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/exchange-rates/rate?from=NGN&to=USD",
+              "host": ["{{base_url}}"],
+              "path": ["exchange-rates", "rate"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "NGN"
+                },
+                {
+                  "key": "to",
+                  "value": "USD"
+                }
+              ]
+            },
+            "description": "Tests automatic reverse rate calculation (if USD/NGN exists, calculates NGN/USD)."
+          },
+          "response": []
+        }
+      ],
+      "description": "Multi-currency support with auto-sync from external APIs."
+    },
+    {
+      "name": "5. Audit Logs",
+      "item": [
+        {
+          "name": "Get All Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/audit",
+              "host": ["{{base_url}}"],
+              "path": ["audit"]
+            },
+            "description": "Retrieves all audit logs (limited to last 100)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Audit Logs by Tenant",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/audit/tenant/{{tenant_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["audit", "tenant", "{{tenant_id}}"]
+            },
+            "description": "Retrieves audit logs for a specific tenant."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Audit History for Entity",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/audit/entity/transaction/{{transaction_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["audit", "entity", "transaction", "{{transaction_id}}"]
+            },
+            "description": "Gets complete audit history for a specific entity (e.g., a transaction)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Activity Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/audit/summary/{{tenant_id}}?days=7",
+              "host": ["{{base_url}}"],
+              "path": ["audit", "summary", "{{tenant_id}}"],
+              "query": [
+                {
+                  "key": "days",
+                  "value": "7"
+                }
+              ]
+            },
+            "description": "Gets activity summary (creates/updates/deletes) for the last N days."
+          },
+          "response": []
+        },
+        {
+          "name": "Filter Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/audit?tenantId={{tenant_id}}&entityType=transaction&startDate=2026-04-01&endDate=2026-04-30",
+              "host": ["{{base_url}}"],
+              "path": ["audit"],
+              "query": [
+                {
+                  "key": "tenantId",
+                  "value": "{{tenant_id}}"
+                },
+                {
+                  "key": "entityType",
+                  "value": "transaction"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2026-04-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2026-04-30"
+                }
+              ]
+            },
+            "description": "Filters audit logs by tenant, entity type, and date range."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Manual Audit Log",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenantId\": \"{{tenant_id}}\",\n  \"entityType\": \"account\",\n  \"entityId\": \"{{cash_account_id}}\",\n  \"action\": \"UPDATE\",\n  \"performedBy\": \"user-123\",\n  \"changes\": {\n    \"before\": { \"name\": \"Cash\" },\n    \"after\": { \"name\": \"Cash in Bank\" }\n  },\n  \"ipAddress\": \"192.168.1.1\",\n  \"userAgent\": \"PostmanRuntime/7.32.0\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/audit",
+              "host": ["{{base_url}}"],
+              "path": ["audit"]
+            },
+            "description": "Manually creates an audit log (usually auto-logged by other modules)."
+          },
+          "response": []
+        }
+      ],
+      "description": "Complete audit trail tracking all system actions."
+    }
+  ],
+  "auth": {
+    "type": "noauth"
+  },
+  "event": []
+}
